@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>golang channel | Meet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="channel基本理念 默认的非缓冲类型channel 接收和发送数据都是阻塞的 channel的机制是先进先出 有缓冲的channel，发送方会一直阻塞直到数据被拷贝到缓冲区；如果缓冲区已满，则发送方只能在接收方取走数据后才能从阻塞状态恢复  基本运用 创建无缓冲channelchreadandwrite :=make(chan int) 创建只读channelchonlyread := mak">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang channel">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;05&#x2F;golang-channel&#x2F;index.html">
+<meta property="og:site_name" content="Meet">
+<meta property="og:description" content="channel基本理念 默认的非缓冲类型channel 接收和发送数据都是阻塞的 channel的机制是先进先出 有缓冲的channel，发送方会一直阻塞直到数据被拷贝到缓冲区；如果缓冲区已满，则发送方只能在接收方取走数据后才能从阻塞状态恢复  基本运用 创建无缓冲channelchreadandwrite :=make(chan int) 创建只读channelchonlyread := mak">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-05T10:13:40.252Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Meet" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Meet</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-golang-channel" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/05/golang-channel/" class="article-date">
+  <time datetime="2019-11-05T10:13:11.000Z" itemprop="datePublished">2019-11-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      golang channel
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h5 id="channel基本理念"><a href="#channel基本理念" class="headerlink" title="channel基本理念"></a>channel基本理念</h5><ul>
+<li>默认的非缓冲类型channel 接收和发送数据都是阻塞的</li>
+<li>channel的机制是先进先出</li>
+<li>有缓冲的channel，发送方会一直阻塞直到数据被拷贝到缓冲区；如果缓冲区已满，则发送方只能在接收方取走数据后才能从阻塞状态恢复</li>
+</ul>
+<h5 id="基本运用"><a href="#基本运用" class="headerlink" title="基本运用"></a>基本运用</h5><ul>
+<li>创建无缓冲channel<br><code>chreadandwrite :=make(chan int)</code></li>
+<li>创建只读channel<br><code>chonlyread := make(&lt;-chan int)</code></li>
+<li>创建只写channel<br><code>chonlywrite := make(chan&lt;- int)</code></li>
+<li>struct{}类型的channel,<blockquote>
+<p>它不能被写入任何数据，只有通过close()函数进行关闭操作，才能进行输出操作。。struct类型的channel不占用任何内存</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sig = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;) </span><br><span class="line"><span class="built_in">close</span>(sig)</span><br><span class="line">&lt;-sig</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h5 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h5><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/<span class="keyword">go</span></span><br><span class="line">ch :=<span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">ch &lt;- <span class="number">1</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;      </span><br><span class="line">    &lt;-ch      </span><br><span class="line">    fmt.Println(<span class="string">"1"</span>)</span><br><span class="line">&#125;()</span><br><span class="line">fmt.Println(<span class="string">"2"</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>fatal error: all goroutines are asleep - deadlock!</strong></p>
+<p><em>因为我们创建的channel是无缓冲的，即同步的，赋值完成后来不及读取channel，程序就已经阻塞</em></p>
+<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><ol>
+<li>给channel增加缓冲区，然后在程序的最后让主线程休眠一秒（？？<br>如果不休眠，程序会优先执行主线程，主线程执行完成后，程序会立即退出，没有多余的时间去执行子线程）<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/<span class="keyword">go</span></span><br><span class="line">ch :=<span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>,<span class="number">1</span>)</span><br><span class="line">ch &lt;- <span class="number">1</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    v := &lt;-ch</span><br><span class="line">    fmt.Println(v)</span><br><span class="line">&#125;()</span><br><span class="line">time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">fmt.Println(<span class="string">"2"</span>)</span><br></pre></td></tr></table></figure></li>
+<li>把ch&lt;-1这一行代码放到子线程代码的后面，channel在主线程中被赋值后，主线程就会阻塞，直到channel的值在子线程中被取出<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/go</span><br><span class="line">ch :=make(chan int,1)</span><br><span class="line">go func() &#123;</span><br><span class="line">    v := &lt;-ch</span><br><span class="line">    fmt.Println(v)</span><br><span class="line">&#125;()</span><br><span class="line">ch &lt;- 1</span><br><span class="line">fmt.Println(&quot;2&quot;)</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/11/05/golang-channel/" data-id="ck2moaivs0002fovj6g0q7q1m" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/05/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">测试文章</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/05/golang-channel/">golang channel</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/05/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/">测试文章</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/05/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 Lemon<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
