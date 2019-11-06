@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Meet.lilizhou</title>
+  
+  <subtitle>Fake it till you make it.</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2019-11-06T07:12:09.283Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>Lemon</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>golang channel</title>
+    <link href="http://yoursite.com/2019/11/05/golang-channel/"/>
+    <id>http://yoursite.com/2019/11/05/golang-channel/</id>
+    <published>2019-11-05T10:13:11.000Z</published>
+    <updated>2019-11-06T07:12:09.283Z</updated>
+    
+    <content type="html"><![CDATA[<h5 id="channel基本理念"><a href="#channel基本理念" class="headerlink" title="channel基本理念"></a>channel基本理念</h5><ul><li>默认的非缓冲类型channel 接收和发送数据都是阻塞的</li><li>channel的机制是先进先出</li><li>有缓冲的channel，发送方会一直阻塞直到数据被拷贝到缓冲区；如果缓冲区已满，则发送方只能在接收方取走数据后才能从阻塞状态恢复</li></ul><a id="more"></a><h5 id="基本运用"><a href="#基本运用" class="headerlink" title="基本运用"></a>基本运用</h5><ul><li>创建无缓冲channel<br><code>chreadandwrite :=make(chan int)</code></li><li>创建只读channel<br><code>chonlyread := make(&lt;-chan int)</code></li><li>创建只写channel<br><code>chonlywrite := make(chan&lt;- int)</code></li><li>struct{}类型的channel,<blockquote><p>它不能被写入任何数据，只有通过close()函数进行关闭操作，才能进行输出操作。。struct类型的channel不占用任何内存</p></blockquote><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sig = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;) </span><br><span class="line"><span class="built_in">close</span>(sig)</span><br><span class="line">&lt;-sig</span><br></pre></td></tr></table></figure></li></ul><h5 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h5><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/<span class="keyword">go</span></span><br><span class="line">ch :=<span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">ch &lt;- <span class="number">1</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;      </span><br><span class="line">    &lt;-ch      </span><br><span class="line">    fmt.Println(<span class="string">"1"</span>)</span><br><span class="line">&#125;()</span><br><span class="line">fmt.Println(<span class="string">"2"</span>)</span><br></pre></td></tr></table></figure><p><strong>fatal error: all goroutines are asleep - deadlock!</strong></p><p><em>因为我们创建的channel是无缓冲的，即同步的，赋值完成后来不及读取channel，程序就已经阻塞</em></p><h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><ol><li>给channel增加缓冲区，然后在程序的最后让主线程休眠一秒（？？<br>如果不休眠，程序会优先执行主线程，主线程执行完成后，程序会立即退出，没有多余的时间去执行子线程）<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/<span class="keyword">go</span></span><br><span class="line">ch :=<span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>,<span class="number">1</span>)</span><br><span class="line">ch &lt;- <span class="number">1</span></span><br><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    v := &lt;-ch</span><br><span class="line">    fmt.Println(v)</span><br><span class="line">&#125;()</span><br><span class="line">time.Sleep(<span class="number">1</span> * time.Second)</span><br><span class="line">fmt.Println(<span class="string">"2"</span>)</span><br></pre></td></tr></table></figure></li><li>把ch&lt;-1这一行代码放到子线程代码的后面，channel在主线程中被赋值后，主线程就会阻塞，直到channel的值在子线程中被取出<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/go</span><br><span class="line">ch :=make(chan int,1)</span><br><span class="line">go func() &#123;</span><br><span class="line">    v := &lt;-ch</span><br><span class="line">    fmt.Println(v)</span><br><span class="line">&#125;()</span><br><span class="line">ch &lt;- 1</span><br><span class="line">fmt.Println(&quot;2&quot;)</span><br></pre></td></tr></table></figure></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h5 id=&quot;channel基本理念&quot;&gt;&lt;a href=&quot;#channel基本理念&quot; class=&quot;headerlink&quot; title=&quot;channel基本理念&quot;&gt;&lt;/a&gt;channel基本理念&lt;/h5&gt;&lt;ul&gt;
+&lt;li&gt;默认的非缓冲类型channel 接收和发送数据都是阻塞的&lt;/li&gt;
+&lt;li&gt;channel的机制是先进先出&lt;/li&gt;
+&lt;li&gt;有缓冲的channel，发送方会一直阻塞直到数据被拷贝到缓冲区；如果缓冲区已满，则发送方只能在接收方取走数据后才能从阻塞状态恢复&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+      <category term="后端" scheme="http://yoursite.com/categories/%E5%90%8E%E7%AB%AF/"/>
+    
+    
+      <category term="golang" scheme="http://yoursite.com/tags/golang/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>测试文章</title>
+    <link href="http://yoursite.com/2019/11/05/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/"/>
+    <id>http://yoursite.com/2019/11/05/测试文章/</id>
+    <published>2019-11-05T10:08:46.000Z</published>
+    <updated>2019-11-05T10:08:46.342Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://yoursite.com/2019/11/05/hello-world/"/>
+    <id>http://yoursite.com/2019/11/05/hello-world/</id>
+    <published>2019-11-05T03:07:30.152Z</published>
+    <updated>2019-11-05T03:07:30.152Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+</feed>

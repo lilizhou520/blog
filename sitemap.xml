@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://yoursite.com/2019/11/05/golang-channel/</loc>
+    
+    <lastmod>2019-11-06T07:12:09.283Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/tags/index.html</loc>
+    
+    <lastmod>2019-11-06T06:50:19.996Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/categories/index.html</loc>
+    
+    <lastmod>2019-11-06T06:50:12.636Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2019/11/05/%25E6%25B5%258B%25E8%25AF%2595%25E6%2596%2587%25E7%25AB%25A0/</loc>
+    
+    <lastmod>2019-11-05T10:08:46.342Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2019/11/05/hello-world/</loc>
+    
+    <lastmod>2019-11-05T03:07:30.152Z</lastmod>
+    
+  </url>
+  
+</urlset>
