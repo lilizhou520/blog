@@ -46,36 +46,10 @@ code {
   font: 18px Lora;
   color: #bbb;
 }
-.header .links {
-  height: 40px;
-  margin: 2.25em auto 4.5em;
-  border-top: 1px dashed #ddd;
+.header .divider {
+  height: 10px;
+  margin: 0.5em auto 0.5em;
   border-bottom: 1px dashed #ddd;
-  font: 700 13px Lato-Bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.header .links ul {
-  text-decoration: none;
-  padding: 0;
-}
-.header .links ul li {
-  display: inline-block;
-}
-.header .links ul li:first-child::after {
-  content: "\00B7";
-  margin: 0 0.75em;
-}
-.header .links ul li:last-child::after {
-  content: '';
-}
-.header .links ul li a {
-  color: #777;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.header .links ul li a:hover {
-  color: #f78769;
 }
 .header .ipad-menu {
   display: none;
@@ -148,6 +122,46 @@ code {
     font: 700 12px Lato-Bold;
     outline: 3px solid #bbb;
   }
+}
+.footer {
+  clear: both;
+  text-align: center;
+}
+.footer h1,
+.footer h2 {
+  margin: 0;
+  line-height: 1.2;
+}
+.footer .links {
+  height: 40px;
+  margin: 2.25em auto 4.5em;
+  border-top: 1px dashed #ddd;
+  border-bottom: 1px dashed #ddd;
+  font: 700 13px Lato-Bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.footer .links ul {
+  text-decoration: none;
+  padding: 0;
+}
+.footer .links ul li {
+  display: inline-block;
+}
+.footer .links ul li:first-child::after {
+  content: "\00B7";
+  margin: 0 0.75em;
+}
+.footer .links ul li:last-child::after {
+  content: '';
+}
+.footer .links ul li a {
+  color: #777;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.footer .links ul li a:hover {
+  color: #f78769;
 }
 .post {
   position: relative;
@@ -387,14 +401,15 @@ body {
 }
 .container {
   max-width: 1142px;
-  width: 80%;
+  width: 90%;
   box-sizing: border-box;
-  padding: 3em 5%;
+  padding: 1em 3%;
   background: #fff;
-  margin: 3em auto;
+  margin: 1em auto;
   overflow: hidden;
 }
 .container .main {
+  margin: 1em 0 0;
   width: 70%;
   float: left;
 }
